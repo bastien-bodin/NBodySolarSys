@@ -8,15 +8,17 @@ This project is a **C++ N-Body simulator** designed to model the orbital dynamic
 In a pure Newtonian model, the force becomes infinite as the distance between two bodies approaches zero ($1/r^2$). In a discrete numerical simulation, a close encounter can lead to a "numerical singularity," where a body is ejected from the system at unphysical speeds due to an extreme acceleration spike.
 
 To prevent this, we implement **Gravitational Softening**:
-$$\vec{a}_i = \sum_{j \neq i} G \frac{M_j}{(\|\vec{r}_{ij}\|^2 + \epsilon^2)^{3/2}} \vec{r}_{ij}$$
+$$
+\vec{a}_i = \sum_{j \neq i} G \frac{M_j}{(\|\vec{r}_{ij}\|^2 + \epsilon^2)^{3/2}} \vec{r}_{ij}
+$$
 
 The parameter $\epsilon$ (softening length) ensures the denominator never reaches zero. This technique is not only a stability trick for N-Body systems but is also a core concept in **SPH (Smoothed Particle Hydrodynamics)**, where it defines the interaction scale between fluid particles.
 
 ### 2. Time Integration: Semi-Implicit Euler
 The simulation currently uses the **Semi-Implicit Euler** scheme (also known as Euler-Cromer). Unlike the standard explicit Euler, it updates velocity first and then uses the *new* velocity to update the position:
 
-1. $\vec{v}_{n+1} = \vec{v}_n + \vec{a}_n \Delta t$
-2. $\vec{r}_{n+1} = \vec{r}_n + \vec{v}_{n+1} \Delta t$
+1. $\vec{v}_{n+1} = \vec{v}_n + \vec{a}_n \Delta t $
+2. $\vec{r}_{n+1} = \vec{r}_n + \vec{v}_{n+1} \Delta t $
 
 **Limitations:** While this method is symplectic (it conserves phase-space volume better than explicit Euler), it remains a **first-order integrator**. It is relatively simplistic and can lead to energy drift over very long timescales (centuries). For higher precision, higher-order schemes like **Runge-Kutta 4 (RK4)** or **Velocity Verlet** would be preferred.
 
